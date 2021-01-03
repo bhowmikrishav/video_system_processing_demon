@@ -105,3 +105,6 @@ dist
 
 # manifest folder
 manifest/
+
+# temprory folder for storing video files
+temp/

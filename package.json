@@ -1,0 +1,23 @@
+{
+  "name": "video_system_processing_demon",
+  "version": "1.0.0",
+  "description": "System connected to remort internet connection, meant to perfrom CRON jobs which process video files to streamble chunks of multiple resolution",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishavbhowmik/video_system_processing_demon.git"
+  },
+  "author": "Rishav Bhowmik",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/rishavbhowmik/video_system_processing_demon/issues"
+  },
+  "homepage": "https://github.com/rishavbhowmik/video_system_processing_demon#readme",
+  "dependencies": {
+    "cassandra-driver": "^4.6.1",
+    "mongodb": "^3.6.3"
+  }
+}
