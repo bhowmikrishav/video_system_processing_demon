@@ -4,7 +4,7 @@ const fs = require('fs/promises')
 const mime_to_ext = require('./mime_to_ext')
 
 /**
- * @param {string} _resolution - '144'|'360'|'720'
+ * @param {'144'|'360'|'720'} _resolution - '144'|'360'|'720'
  * @type {function(_resolution)}
  * @returns {Promise<{
             _id: mongodb.ObjectId,
@@ -12,7 +12,7 @@ const mime_to_ext = require('./mime_to_ext')
             upload_time: number,
             upload_id: mongodb.ObjectId,
             stream_manifest: {"144":null, "360":null, "720":null}
-        }>}
+        }|null>}
  */
 async function load_manifest(_resolution){
     try{
@@ -38,7 +38,6 @@ async function load_manifest(_resolution){
         throw e
     }
 }
-
 /**
  * @param {mongodb.ObjectId|string} video_upload_id - ObjectID of the video file
  * @type {function(video_upload_id)}
@@ -76,22 +75,7 @@ async function load_video_file_manifest(video_upload_id){
 /**
  * @type {function(video_upload_id)}
  * @param {string} video_upload_id 
- * @returns {Promise<{
-        _id: mongodb.ObjectId,
-        user_id: string,
-        name: string,
-        size: number,
-        mime_type: string,
-        upload_size: number,
-        upload_end: boolean,
-        chunks: [
-            {
-                object_id: string,
-                slice_start: number,
-                size: number
-            }
-        ]
-    }>}
+ * @returns {Promise<{raw_file_name:string}>}
  */
 async function load_video_file(video_upload_id){
     try{
@@ -117,11 +101,16 @@ async function load_video_file(video_upload_id){
     }
     await Keyspace.close()
     await DB.mongodb_client.close()
-    return file_manifest
+    return {raw_file_name}
 }
-
+/**
+ * @type {function():Promise<{raw_file_name, video_id: mongodb.ObjectId}>}
+ */
 async function load_video(){
-
+    const video_id = await load_manifest('144')
+    if(video_id === null) return null
+    const {raw_file_name} = await load_video_file(video_id.upload_id.toString())
+    return {raw_file_name, video_id: video_id._id}
 }
 
 module.exports = {load_video}
@@ -154,4 +143,12 @@ load_video_file("5fdf0655034dc94dc44c4594")
     console.log(err);
 })
 */
+
+load_video()
+.then((res)=>{
+    console.log(res);
+})
+.catch(err=>{
+    console.log(err);
+})
 
