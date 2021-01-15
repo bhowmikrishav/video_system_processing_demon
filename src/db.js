@@ -7,20 +7,16 @@ class DB{
      * @returns {Promise<mongodb.Db>}
      */
     static async mongodb_video_system(){
-        if(DB.mongodb_con) return DB.mongodb_con.db(mongodb_config.video_system.name)
-        DB.mongodb_con = await DB.mongodb_client.connect()
-        return DB.mongodb_con.db(mongodb_config.video_system.name)
+        if(DB.mongodb_client.isConnected()) return DB.mongodb_client.db(mongodb_config.video_system.name)
+        await DB.mongodb_client.connect()
+        return DB.mongodb_client.db(mongodb_config.video_system.name)
     }
 }
 /** @type {mongodb.MongoClient} */
-DB.mongodb_con = null
 DB.mongodb_client = new mongodb.MongoClient(
     mongodb_config.video_system.uri,
     mongodb_config.video_system.config
 );
-DB.mongodb_client.connect()
-.then(con => DB.mongodb_con = con)
-.catch( err => console.log(err))
 
 const cassandra = require('cassandra-driver');
  
@@ -36,6 +32,9 @@ class Keyspace{
     static mk_unique_id(){
         return `${cassandra.types.TimeUuid.now()}|${process.pid}`;
         //return `${os.hostname()}|${os.uptime()}|${process.pid}|${mongodb.ObjectId().toString()}`
+    }
+    static async close(){
+        await cassandra_client.shutdown()
     }
 }
 Keyspace.COMMANDS = {};

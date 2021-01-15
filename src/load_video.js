@@ -73,19 +73,51 @@ async function load_video_file_manifest(video_upload_id){
         throw e
     }
 }
-
+/**
+ * @type {function(video_upload_id)}
+ * @param {string} video_upload_id 
+ * @returns {Promise<{
+        _id: mongodb.ObjectId,
+        user_id: string,
+        name: string,
+        size: number,
+        mime_type: string,
+        upload_size: number,
+        upload_end: boolean,
+        chunks: [
+            {
+                object_id: string,
+                slice_start: number,
+                size: number
+            }
+        ]
+    }>}
+ */
 async function load_video_file(video_upload_id){
-    const file_manifest = await load_video_file_manifest("5fdf0655034dc94dc44c4594")
-    await fs.appendFile("temp/raw"+mime_to_ext(file_manifest.mime_type), Buffer.from(''))
+    try{
+        const temp_files = await fs.readdir("./temp")
+        for (const i in temp_files) {
+            await fs.unlink("./temp/"+temp_files[i])
+        }
+    }catch(e){
+        console.log(e);
+    }
+    
+    const file_manifest = await load_video_file_manifest(video_upload_id)
+    const raw_file_name = "temp/raw"+mime_to_ext(file_manifest.mime_type)
+    await fs.writeFile( raw_file_name, Buffer.from(''))
     for(const i in file_manifest.chunks){
         const chunk = file_manifest.chunks[i]
         const result = await Keyspace.client().execute(
             Keyspace.COMMANDS.GET_PUBLIC_OBJECT,
             [chunk.object_id]
         )
-        await fs.appendFile("temp/raw"+mime_to_ext(file_manifest.mime_type), result.rows[0].data)
+        await fs.appendFile(raw_file_name, result.rows[0].data)
         console.log(result.rows[0].data.length)
     }
+    await Keyspace.close()
+    await DB.mongodb_client.close()
+    return file_manifest
 }
 
 async function load_video(){
@@ -116,9 +148,10 @@ load_video_file_manifest("5fdf0655034dc94dc44c4594")
 /*
 load_video_file("5fdf0655034dc94dc44c4594")
 .then((res)=>{
-    //console.log(res);
+    console.log(res);
 })
 .catch(err=>{
-    //console.log(err);
+    console.log(err);
 })
 */
+

@@ -6,6 +6,4 @@ const dic = {
  * @param {string} mime_type 
  * @type {function(mime_type):string}
  */
-module.exports = function (mime_type){
-    return dic[mime_type]
-}
+module.exports = (mime_type) => dic[mime_type]
