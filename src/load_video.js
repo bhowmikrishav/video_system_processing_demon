@@ -86,25 +86,30 @@ async function load_video_file(video_upload_id){
     }catch(e){
         console.log(e);
     }
-    
-    const file_manifest = await load_video_file_manifest(video_upload_id)
-    const raw_file_name = "temp/raw"+mime_to_ext(file_manifest.mime_type)
-    await fs.writeFile( raw_file_name, Buffer.from(''))
-    for(const i in file_manifest.chunks){
-        const chunk = file_manifest.chunks[i]
-        const result = await Keyspace.client().execute(
-            Keyspace.COMMANDS.GET_PUBLIC_OBJECT,
-            [chunk.object_id]
-        )
-        await fs.appendFile(raw_file_name, result.rows[0].data)
-        console.log(result.rows[0].data.length)
+    try {
+        const file_manifest = await load_video_file_manifest(video_upload_id)
+        const raw_file_name = "temp/raw"+mime_to_ext(file_manifest.mime_type)
+        await fs.writeFile( raw_file_name, Buffer.from(''))
+        for(const i in file_manifest.chunks){
+            const chunk = file_manifest.chunks[i]
+            const result = await Keyspace.client().execute(
+                Keyspace.COMMANDS.GET_PUBLIC_OBJECT,
+                [chunk.object_id]
+            )
+            await fs.appendFile(raw_file_name, result.rows[0].data)
+            console.log(result.rows[0].data.length)
+        }
+        await Keyspace.close()
+        await DB.mongodb_client.close()
+        return {raw_file_name}   
+    } catch (e) {
+        await Keyspace.close()
+        await DB.mongodb_client.close()
+        throw e
     }
-    await Keyspace.close()
-    await DB.mongodb_client.close()
-    return {raw_file_name}
 }
 /**
- * @type {function():Promise<{raw_file_name, video_id: mongodb.ObjectId}>}
+ * @type {function():Promise<{raw_file_name, video_id: mongodb.ObjectId}|null>}
  */
 async function load_video(){
     const video_id = await load_manifest('144')
@@ -143,7 +148,7 @@ load_video_file("5fdf0655034dc94dc44c4594")
     console.log(err);
 })
 */
-
+/*
 load_video()
 .then((res)=>{
     console.log(res);
@@ -151,4 +156,5 @@ load_video()
 .catch(err=>{
     console.log(err);
 })
+*/
 

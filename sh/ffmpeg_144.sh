@@ -1,0 +1,1 @@
+ffmpeg -i <raw_file_name> -c:v libvpx-vp9 -crf 30 -b:v 200k -filter:v scale=-1:144 -map 0 -segment_time 00:00:05 -f segment temp/output%d.webm

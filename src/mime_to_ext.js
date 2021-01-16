@@ -1,5 +1,10 @@
 const dic = {
-    "video/webm":".webm"
+    "video/webm":".webm",
+    "video/mp4":".mp4",
+    "video/MP2T":".ts",
+    "video/quicktime":".mov",
+    "video/x-msvideo":".avi",
+    "video/ogg":".ogg"
 }
 
 /**
