@@ -1,4 +1,7 @@
 # video_system_processing_demon
+
+*I know its called deamon, but 'demon' sounds fun*
+
 System connected to remort internet connection, meant to perfrom CRON jobs which process video files to streamble chunks of multiple resolution
 
 ## FFMPEG commands
