@@ -14,6 +14,30 @@ ______##        clip2
 ________###     clip3
 ```
 
+Command
+
 ```
 ./ffmpeg -i pride.mp4 -c:v libvpx-vp9 -crf 30 -b:v 2000k -map 0 -segment_time 00:00:05 -f segment output%03d.webm
+```
+
+Probe result of output001.webm
+```
+[Video Stream]
+codec_name=vp9
+codec_long_name=Google VP9
+coded_width=1920
+coded_height=800
+display_aspect_ratio=12:5
+start_time=5.346000
+pix_fmt=yuv420p
+ENCODER=Lavc58.112.101 libvpx-vp9
+DURATION=00:00:10.685000000
+
+[Audio Stream]
+codec_name=opus
+codec_long_name=Opus (Opus Interactive Audio Codec)
+channel_layout=stereo
+ENCODER=Lavc58.112.101 libopus
+DURATION=00:00:10.700000000
+start_time=5.353000
 ```
