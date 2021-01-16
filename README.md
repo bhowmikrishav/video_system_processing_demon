@@ -2,11 +2,11 @@
 
 *I know its called deamon, but 'demon' sounds fun*
 
-System connected to remort internet connection, meant to perfrom CRON jobs which process video files to streamble chunks of multiple resolution
+System connected to remort internet connection, meant to perform CRON jobs which will process video files to streamble chunks of multiple resolution.
 
 ## FFMPEG commands
 
-I like this one, all clips start from duration, where their preceding clip ends
+I like this one, all clips start from duration, where their preceding clip ends.
 
 #### Like
 
