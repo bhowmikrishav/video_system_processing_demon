@@ -5,6 +5,7 @@ const fs = require('fs/promises')
  * @param {string} raw_file_name 
  * @param {mongodb.ObjectId} video_id 
  * @param {'144'|'360'|'720'} _resolution 
+ * @returns {Promise<string>}
  */
 function process_video(raw_file_name, _resolution) {
     return new Promise(async (resolve, rejects)=>{
@@ -34,8 +35,11 @@ function probe(file){
         })
     })
 }
-
-async function manifest_up(raw_file_name) {
+/**
+ * @param {string} raw_file_name 
+ * @returns {Promise<[]>}
+ */
+async function manifest_up(raw_file_name = '') {
     const output_files = (await fs.readdir('./temp')).filter(d=>{
         return /^output.*$/.test(d)
     })

@@ -20,7 +20,7 @@ async function load_manifest(_resolution){
         var match_param = {}, update_param = {}
         match_param[`stream_manifest.${_resolution}`] = null
         update_param['$set'] = {}
-        update_param['$set'][`stream_manifest.${_resolution}`] = { expire_at: Date.now()+60_000*60*2 }
+        update_param['$set'][`stream_manifest.${_resolution}`] = null//{ expire_at: Date.now()+60_000*60*2 }
         
         const result = await videos_collection.findOneAndUpdate(
             match_param,
@@ -99,17 +99,13 @@ async function load_video_file(video_upload_id){
             await fs.appendFile(raw_file_name, result.rows[0].data)
             console.log(result.rows[0].data.length)
         }
-        await Keyspace.close()
-        await DB.mongodb_client.close()
         return {raw_file_name}   
     } catch (e) {
-        await Keyspace.close()
-        await DB.mongodb_client.close()
         throw e
     }
 }
 /**
- * @type {function():Promise<{raw_file_name, video_id: mongodb.ObjectId}|null>}
+ * @type {function():Promise<{raw_file_name:string, video_id: mongodb.ObjectId}|null>}
  */
 async function load_video(){
     const video_id = await load_manifest('144')
