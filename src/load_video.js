@@ -20,7 +20,7 @@ async function load_manifest(_resolution){
         var match_param = {}, update_param = {}
         match_param[`stream_manifest.${_resolution}`] = null
         update_param['$set'] = {}
-        update_param['$set'][`stream_manifest.${_resolution}`] = null//{ expire_at: Date.now()+60_000*60*2 }
+        update_param['$set'][`stream_manifest.${_resolution}`] = { expire_at: Date.now()+60_000*60*2 }
         
         const result = await videos_collection.findOneAndUpdate(
             match_param,
