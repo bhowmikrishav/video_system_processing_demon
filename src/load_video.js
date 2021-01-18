@@ -9,6 +9,7 @@ const mime_to_ext = require('./mime_to_ext')
  * @returns {Promise<{
             _id: mongodb.ObjectId,
             title: string,
+            user_id: mongodb.ObjectId,
             upload_time: number,
             upload_id: mongodb.ObjectId,
             stream_manifest: {"144":null, "360":null, "720":null}
@@ -20,13 +21,14 @@ async function load_manifest(_resolution){
         var match_param = {}, update_param = {}
         match_param[`stream_manifest.${_resolution}`] = null
         update_param['$set'] = {}
-        update_param['$set'][`stream_manifest.${_resolution}`] = { expire_at: Date.now()+60_000*60*2 }
+        update_param['$set'][`stream_manifest.${_resolution}`] = null//{ expire_at: Date.now()+60_000*60*2 }
         
         const result = await videos_collection.findOneAndUpdate(
             match_param,
             update_param
         )
         return result.value? {
+            user_id: result.value.user_id,
             _id: result.value._id,
             title: result.value.title,
             upload_time: result.value.upload_time,
@@ -105,13 +107,13 @@ async function load_video_file(video_upload_id){
     }
 }
 /**
- * @type {function():Promise<{raw_file_name:string, video_id: mongodb.ObjectId}|null>}
+ * @type {function():Promise<{raw_file_name:string, video_id: mongodb.ObjectId, user_id:mongodb.ObjectId}|null>}
  */
 async function load_video(){
-    const video_id = await load_manifest('144')
-    if(video_id === null) return null
-    const {raw_file_name} = await load_video_file(video_id.upload_id.toString())
-    return {raw_file_name, video_id: video_id._id}
+    const video = await load_manifest('144')
+    if(video === null) return null
+    const {raw_file_name} = await load_video_file(video.upload_id.toString())
+    return {raw_file_name, video_id: video._id, user_id:video.user_id}
 }
 
 module.exports = {load_video}
