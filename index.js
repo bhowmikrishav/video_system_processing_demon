@@ -1,4 +1,4 @@
-const {load_video, process_video, manifest_up, Keyspace, DB} = require('./src/index')
+const {load_video, process_video, manifest_up, Keyspace, DB, upload_chunks, update_manifest} = require('./src/index')
 
 const mod = async(_resolution)=>{
     try {
@@ -15,8 +15,14 @@ const mod = async(_resolution)=>{
 
         //create manifest of the chunks present in temp dir
         const chunk_manifest = await manifest_up()
+        //console.log(19, chunk_manifest, result); 
+        
+        //upload video sengments as object to DB
+        const upload_manifest = await upload_chunks(chunk_manifest, video_id.toString(), user_id.toString())
 
-        console.log(19, chunk_manifest, result);   
+        //update video document in videos colletion for resolution: _resolution
+        await update_manifest(video_id, _resolution, upload_manifest)
+        
     } catch (e) {
         console.log(e);
     }

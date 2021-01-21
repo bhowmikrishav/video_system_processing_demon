@@ -17,6 +17,16 @@ function process_video(raw_file_name, _resolution) {
     })
 }
 
+/**
+ * @description execute ffprobe on video file
+ * @param {string} file - file path
+ * @returns {Promise<{
+                file: string,
+                height: number,
+                width: number,
+                duration: number
+            }>}
+ */
 function probe(file){
     return new Promise(async (resolve, reject)=>{
         const command = await fs.readFile(`sh/ffprobe.sh`, 'utf8') 
@@ -37,7 +47,12 @@ function probe(file){
 }
 /**
  * @param {string} raw_file_name 
- * @returns {Promise<[]>}
+ * @returns {Promise<[{
+                file: string,
+                height: number,
+                width: number,
+                duration: number
+            }]>}
  */
 async function manifest_up(raw_file_name = '') {
     const output_files = (await fs.readdir('./temp')).filter(d=>{

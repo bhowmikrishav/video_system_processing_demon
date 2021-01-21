@@ -21,7 +21,7 @@ async function load_manifest(_resolution){
         var match_param = {}, update_param = {}
         match_param[`stream_manifest.${_resolution}`] = null
         update_param['$set'] = {}
-        update_param['$set'][`stream_manifest.${_resolution}`] = null//{ expire_at: Date.now()+60_000*60*2 }
+        update_param['$set'][`stream_manifest.${_resolution}`] = { expire_at: Date.now()+60_000*60*2 }
         
         const result = await videos_collection.findOneAndUpdate(
             match_param,
@@ -113,7 +113,7 @@ async function load_video(){
     const video = await load_manifest('144')
     if(video === null) return null
     const {raw_file_name} = await load_video_file(video.upload_id.toString())
-    return {raw_file_name, video_id: video._id, user_id:video.user_id}
+    return {raw_file_name, video_id: video._id, user_id:mongodb.ObjectId(video.user_id)}
 }
 
 module.exports = {load_video}
