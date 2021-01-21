@@ -58,6 +58,8 @@ async function manifest_up(raw_file_name = '') {
     const output_files = (await fs.readdir('./temp')).filter(d=>{
         return /^output.*$/.test(d)
     })
+    //sort file assending squence
+    output_files.sort()
     var chunks = []
     for(const i in output_files){
         chunks.push(await probe(`./temp/${output_files[i]}`))

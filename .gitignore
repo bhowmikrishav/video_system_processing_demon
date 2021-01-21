@@ -107,4 +107,4 @@ dist
 manifest/
 
 # temprory folder for storing video files
-temp/
+temp/*

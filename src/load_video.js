@@ -107,10 +107,11 @@ async function load_video_file(video_upload_id){
     }
 }
 /**
+ * @param {'144'|'360'|'720'} _resolution 
  * @type {function():Promise<{raw_file_name:string, video_id: mongodb.ObjectId, user_id:mongodb.ObjectId}|null>}
  */
-async function load_video(){
-    const video = await load_manifest('144')
+async function load_video(_resolution){
+    const video = await load_manifest(_resolution)
     if(video === null) return null
     const {raw_file_name} = await load_video_file(video.upload_id.toString())
     return {raw_file_name, video_id: video._id, user_id:mongodb.ObjectId(video.user_id)}

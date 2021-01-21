@@ -1,9 +1,13 @@
 const {load_video, process_video, manifest_up, Keyspace, DB, upload_chunks, update_manifest} = require('./src/index')
 
+/**
+ * 
+ * @param {'144'|'360'|'720'} _resolution 
+ */
 const mod = async(_resolution)=>{
     try {
          //find a job, find video of which require processing in respective resolution
-        const video = await load_video()
+        const video = await load_video(_resolution)
         if(video === null) throw Error("No video Found")
         const {raw_file_name, video_id, user_id} = video
         console.log(9, video);
@@ -36,7 +40,7 @@ module.exports = mod
 
 //unit tests
 console.log(Date.now());
-mod('144')
+mod('720')
 .then(r=>{
     //console.log(r);
     console.log(Date.now());
