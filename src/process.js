@@ -55,11 +55,16 @@ function probe(file){
             }]>}
  */
 async function manifest_up(raw_file_name = '') {
-    const output_files = (await fs.readdir('./temp')).filter(d=>{
+    var output_files = (await fs.readdir('./temp')).filter(d=>{
         return /^output.*$/.test(d)
     })
     //sort file assending squence
-    output_files.sort()
+    output_files = output_files.sort((a, b)=>{
+        a = a.match(/\d\d*/g)[0]
+        b = b.match(/\d\d*/g)[0]
+        //console.log(a, b);
+        return Number(a) - Number(b)
+    })
     var chunks = []
     for(const i in output_files){
         chunks.push(await probe(`./temp/${output_files[i]}`))
@@ -91,14 +96,14 @@ manifest_up()
 .catch((e)=>console.log(e))
 */
 /*
-probe('temp/output0.webm')
+probe('temp/output3.webm')
 .then((res)=>{console.log(res);console.log(Date.now());})
 .catch((e)=>console.log(e))
 */
-/*
+
 manifest_up()
 .then((res)=>{
     console.log(res);
 })
 .catch((e)=>console.log(e))
-*/
+

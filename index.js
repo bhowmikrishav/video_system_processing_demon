@@ -40,7 +40,7 @@ module.exports = mod
 
 //unit tests
 console.log(Date.now());
-mod('720')
+mod('144')
 .then(r=>{
     //console.log(r);
     console.log(Date.now());
